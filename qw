@@ -1,0 +1,24 @@
+- hosts: localhost
+  tasks:
+  - name: mirorlist_bkp
+    become: true
+    command: mv /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist_bkp
+  - name: chaotic-mirrorlist_bkp  
+    become: true
+    command: mv /etc/pacman.d/chaotic-mirrorlist /etc/pacman.d/chaotic-mirrorlist_bkp
+
+  - name: mirrorlist url added
+    become: true  
+    copy:
+      dest: "/etc/pacman.d/mirrorlist"
+      content: |
+        ## Improwised Local Arch Main
+        Server = https://arch-mirror.pride.improwised.dev/$repo/os/$arch
+          
+  - name: chaotic-mirrorlist added    
+    become: true
+    copy:    
+      dest: "/etc/pacman.d/chaotic-mirrorlist"
+      content: |
+        ## Improwised Local
+        Server = https://arch-mirror.pride.improwised.dev/custom_repo/chaotic-aur/$repo/$arch
