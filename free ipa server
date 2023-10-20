@@ -1,0 +1,238 @@
+
+sudo docker run --name freeipa-server-container -ti \
+-h ipa.example.com --read-only  \
+--sysctl net.ipv6.conf.all.disable_ipv6=0 \
+-v /sys/fs/cgroup:/sys/fs/cgroup:ro \
+-v /var/lib/ipa-data:/data:Z freeipa-server 
+
+
+
+##New working command ###
+docker run -ti -h ipa.example.test --read-only \
+--sysctl net.ipv6.conf.all.disable_ipv6=0 \
+    -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
+    -v /var/lib/ipa-data:/data:Z \
+    -e PASSWORD=Secret123 \
+    freeipa/freeipa-server:centos-8-stream ipa-server-install -U -r EXAMPLE.TEST --no-ntp
+    ====================================================================================================================
+    
+    volume mount testing 
+    
+    docker run --name ipa-server -ti \
+	-h ipa.imp.test -p 53:53/udp -p 53:53 \
+	-p 80:80 -p 443:443 -p 389:389 -p 636:636 -p 88:88 -p 464:464 -p 88:88/udp \
+       	-p 464:464/udp -p 123:123/udp --read-only  \
+	--sysctl net.ipv6.conf.all.disable_ipv6=0 -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
+	-v /test:/data \
+	-e PASSWORD=Secret123 \
+    freeipa/freeipa-server:centos-8-stream ipa-server-install -U -r IMP.TEST --no-ntp
+    
+    
+    
+    **first create docker volume and put this part as source first
+    **cofigration file like data put this as destination   
+    this use with in docker 
+ --------------------------------------------------------------------------------------------------   
+    ##New working command external ###
+    
+    Bind mount 
+    
+    docker run --name ipa-server -ti \
+	-h ipa.imp.test -p 53:53/udp -p 53:53 \
+	-p 80:80 -p 443:443 -p 389:389 -p 636:636 -p 88:88 -p 464:464 -p 88:88/udp \
+    -p 464:464/udp -p 123:123/udp --read-only  \
+	--sysctl net.ipv6.conf.all.disable_ipv6=0 -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
+	-v /var/lib/ipa-data:/data:Z \
+	-e PASSWORD=Secret123 \
+    freeipa/freeipa-server:centos-8-stream ipa-server-install -U -r IMP.TEST --no-ntp
+    
+    this use for host system bkp
+    
+    
+    
+    
+  -----------------------------------------------------------------------------------------------  
+    version: "3.9"
+services:
+  frontend:
+    image: node:lts
+    volumes:
+      - type: bind
+        source: ./static
+        target: /opt/app/staticvolumes:
+  myapp:
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    ldapsearch -h idm-01a.somednsdom.com \
+    -D 'uid=joeuser,cn=users,cn=accounts,dc=somedcdom,dc=com' \
+    -o ldif-wrap=no \
+    -b 'cn=accounts,dc=somedcdom,dc=com' \
+    -W uid=joeuser
+    
+    ldapsearch -h ipa.imp.test \
+    -D 'uid=abc,dc=imp,dc=test' \
+    -o ldif-wrap=no \
+    -b 'dc=imp,dc=test' \
+    -W uid=abc
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    10.0.8.83 ipa.imp.test   ipa-server
+    
+    
+    
+ https://dangibbs.uk/blog/running-systemd-docker-containers-archlinux/   
+ https://computingforgeeks.com/run-freeipa-server-in-docker-podman-containers/	
+ 
+ ====================================Kernel parameters can be set in GRUB 2 by appending the GRUB_CMDLINE_LINUX or GRUB_CMDLINE_LINUX_DEFAULT options.
+
+# /etc/default/grub
+GRUB_CMDLINE_LINUX_DEFAULT=""
+GRUB_CMDLINE_LINUX="quiet systemd.unified_cgroup_hierarchy=0"
+Regenerate the GRUB configuration with:
+
+grub-mkconfig -o /boot/grub/grub.cfg
+ 
+Default grub as below 
+ GRUB_DISTRIBUTOR="Garuda"
+GRUB_CMDLINE_LINUX_DEFAULT="quiet quiet splash rd.udev.log_priority=3 vt.global_cursor_default=0 loglevel=3"
+GRUB_CMDLINE_LINUX=""
+
+ 
+==================================================================================================================== 
+  sudo rm -r  /var/lib/ipa-data
+    sudo mkdir -p /var/lib/ipa-data
+ 
+ =========================================================================================================
+ docker run --name freeipa-server -ti \
+	-h ipa.imp.test -p 53:53/udp -p 53:53 \
+	-p 80:80 -p 443:443 -p 389:389 -p 636:636 -p 88:88 -p 464:464 -p 88:88/udp \
+       	-p 464:464/udp -p 123:123/udp --read-only  \
+	--sysctl net.ipv6.conf.all.disable_ipv6=0 -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
+	-v /var/lib/ipa-data:/data:Z \
+	-e PASSWORD=Secret123 \
+    freeipa/freeipa-server:centos-8-stream ipa-server-install -U -r IMP.TEST --no-ntp
+======================================================================================================================    
+    
+    change ip in host sys
+	 sudo nano /etc/hosts
+	 127.0.0.1    ipa.example.test   ipa-server
+	
+===============================================================================================================================	
+======Login with browser==============================================
+	
+	https://ipa.imp.test
+	user : Admin
+	pwd : Secret123
+	
+====================================================================================================================================	
+	
+	
+	
+	10.0.8.83  172.17.0.2
+	
+	
+ldapsearch -x uid=admin
+
+https://www.freeipa.org/page/HowTo/LDAP	
+	
+ldapsearch -x -b "dc=imp,dc=test" -H ldap://127.0.0.1 -D "uid=admin,cn=users,cn=accounts,dc=imp,dc=test" -W
+	
+ldapsearch -x -b "dc=imp,dc=test" -H ldap://127.0.0.1 -D "uid=abc,cn=users,cn=accounts,dc=imp,dc=test" -W
+
+ldapsearch -x -b "dc=improwised,dc=com" -H ldap://ipa.improwised.com -D "uid=admin,cn=users,cn=accounts,dc=improwised,dc=com" -W 
+	
+	
+	abc@imp.test
+	
+	URI ldaps://ipa.imp.test
+BASE dc=imp,dc=test
+TLS_CACERT /etc/ipa/ca.crt
+SASL_MECH GSSAPI
+
+	
+	
+	
+freeipa-server:latest
+
+
+
+
+
+
+
+
+
+
+
+
+
+docker run --name freeipa-server -ti \                                                                                                                                                              ✔ 
+    -h ipa.example.test --read-only=true \
+    -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
+    -v /var/lib/ipa-data:/data:Z freeipa/freeipa-server:centos-8-stream
+
+
+
+
+ sudo rm -r  /var/lib/ipa-data
+    sudo mkdir -p /var/lib/ipa-data
+    
+    
+    docker run --name freeipa-server impro -ti \
+    -h ipa.example.test --read-only \
+    -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
+    -v /var/lib/ipa-data:/data:Z freeipa/freeipa-server:centos-8-stream
+    
+    
+    
+    
+     docker run --name freeipa -ti \
+    -h ipa.impro.test --read-only \
+    -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
+    -v /var/lib/ipa-data:/data:Z freeipa/freeipa-server:centos-8-stream
+    
+    
+   
+    
+    /etc/default
+		
+		
+		
+		
+		
+	docker run --name freeipa-server impro -ti \
+    -h ipa.example.test --read-only=true \
+    -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
+    -v /var/lib/ipa-data:/data:Z freeipa/freeipa-server:centos-8-stream
+    
+		
+	docker run --name freeipa-server-container -ti \
+    -h ipa.example.test --read-only \
+    -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
+    -v /var/lib/ipa-data:/data:Z freeipa/freeipa-server:centos-8-stream
+
+	https://en.euro-linux.com/blog/centralized-identity-management-freeipa-in-practice/	
+https://leo.leung.xyz/wiki/FreeIPA		
+		https://www.dltlabs.com/blog/bind-mounts-volumes-indocker-133067
+		
+	https://hub.docker.com/r/freeipa/freeipa-server
+	https://nextcloud-freeipa-docker.netlify.app/
+	https://computingforgeeks.com/run-freeipa-server-in-docker-podman-containers/
+	https://www.digitalocean.com/community/tutorials/how-to-remove-docker-images-containers-and-volumes
