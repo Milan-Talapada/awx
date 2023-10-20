@@ -1,0 +1,53 @@
+version: '3.3'
+
+services:
+
+  freeipa:
+    container_name: freeipa-server
+    image: freeipa/freeipa-server:centos-8-stream
+    restart: unless-stopped
+    tty: true
+    stdin_open: true
+    hostname: ipa
+    domainname: imp.test
+    
+    environment:
+      - IPA_SERVER_HOSTNAME=ipa.imp.test
+      - TZ=Asia/Kolkata
+    command:
+      - ipa-server-install
+      - --realm=IMP.TEST
+      - --domain=imp.test
+      - --ds-password=Admin@1234
+      - --admin-password=Admin@1234
+      - --no-host-dns
+      - --setup-dns
+      - --auto-forwarders
+      - --allow-zone-overlap
+      - --no-dnssec-validation
+      - --unattended
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=0
+    volumes:
+      -  /var/lib/ipa-data:/data:Z\
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    tmpfs:
+      - /run
+      - /var/cache
+      - /tmp
+    cap_add:
+      - SYS_TIME
+    ports:
+      - "80:80/tcp"
+      - "443:443/tcp"
+      # DNS
+      - "53:53/tcp"
+      - "53:53/udp"
+      # LDAP(S)
+      - "389:389/tcp"
+      - "636:636/tcp"
+      # Kerberos
+      - "88:88/tcp"
+      - "464:464/tcp"
+      - "88:88/udp"
+      - "464:464/udp"
